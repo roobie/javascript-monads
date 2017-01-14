@@ -1,14 +1,7 @@
-function identity(a) {
-  return a;
-}
-
-function setPrototypeOf(object, prototype) {
-  function C() {
-    Object.assign(this, object);
-  }
-  C.prototype = prototype;
-  return new C();
-}
+import assert from 'assert';
+import identity from './identity';
+import { setPrototypeOf } from './prototypes';
+import { isFunction } from './is';
 
 const MAYBE_TYPE = {
   just: 'just',
@@ -36,31 +29,26 @@ const maybePrototype = Object.create(Object.prototype, {
     }
   },
   match: {
-    value: function ({ Nothing, Just }) {
+    value: function ({ Nothing, Just } = {}) {
+      // we require that Nothing is a function
+      assert(isFunction(Nothing), '{Nothing} must be a function');
       if (this.isNothing) {
         return Nothing();
       }
-      else {
+      else if (isFunction(Just)) {
         return Just(this.__value);
+      }
+      else {
+        return this.__value;
       }
     }
   },
-  unwrap: {
-    value: function () {
-      if (this.isNothing) {
-        return void 0;
-      }
-
-      return this.__value;
-    }
-  }
 });
 
 export const Nothing = setPrototypeOf({}, maybePrototype);
 Object.defineProperty(Nothing, '__maybeType', {
   value: MAYBE_TYPE.nothing
 });
-
 
 export function Just(value) {
   const result = setPrototypeOf({
