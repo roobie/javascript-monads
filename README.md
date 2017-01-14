@@ -44,3 +44,18 @@ const title = getElement('#some-id')
     Just: title => title + '!'
   });
 ```
+
+### TODO
+
+- Perhaps one could implement an "auto-wrapper", that accepts an object, iterates over its properties, and for each function, wraps that function in something like:
+```javascript
+const old<fnName>
+object.<fnName> = function (...args) {
+  const result = old<fnName>.apply(this, args);
+  if (result === null || result === undefined) {
+    return Nothing;
+  }
+  
+  return Just(result);
+};
+```
