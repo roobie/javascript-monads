@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "make": "rollup -c",
-    "test": "babel-tap spec.js"
+    "test": "babel-tap spec/*.js --cov -Rdoc"
   },
   "author": "",
   "license": "ISC",

@@ -1,24 +1,11 @@
 import assert from 'assert';
-import identity from './identity';
-import { setPrototypeOf } from './prototypes';
 import { isFunction } from './is';
 
-const MAYBE_TYPE = {
-  just: 'just',
-  nothing: 'nothing'
-};
-
 const maybePrototype = Object.create(Object.prototype, {
-  isJust: {
-    get: function () {
-      return this.__maybeType === MAYBE_TYPE.just;
-    }
-  },
-  isNothing: {
-    get: function () {
-      return this.__maybeType === MAYBE_TYPE.nothing;
-    }
-  },
+  /**
+   * @this Maybe a
+   * @signature (a -> b) -> Maybe b
+   */
   map: {
     value: function (fn) {
       if (this.isNothing) {
@@ -28,6 +15,10 @@ const maybePrototype = Object.create(Object.prototype, {
       return Just(fn(this.__value));
     }
   },
+  /**
+   * @this Maybe a
+   * @signature { Just: (a -> b), Nothing: (nil -> b) } -> b
+   */
   match: {
     value: function ({ Nothing, Just } = {}) {
       // we require that Nothing is a function
@@ -45,19 +36,17 @@ const maybePrototype = Object.create(Object.prototype, {
   },
 });
 
-export const Nothing = setPrototypeOf({}, maybePrototype);
-Object.defineProperty(Nothing, '__maybeType', {
-  value: MAYBE_TYPE.nothing
+export const Nothing = Object.create(maybePrototype, {
+  isNothing: { value: true },
+  isJust: { value: false }
 });
 
 export function Just(value) {
-  const result = setPrototypeOf({
-    __value: value
-  }, maybePrototype);
-
-  Object.defineProperty(result, '__maybeType', {
-    value: MAYBE_TYPE.just
+  return Object.create(maybePrototype, {
+    isNothing: { value: false },
+    isJust: { value: true },
+    __value: {
+      value: value
+    }
   });
-
-  return result;
 };

@@ -1,6 +1,6 @@
 import {test} from 'babel-tap';
 
-import {Just, Nothing} from './maybe';
+import {Just, Nothing} from '../src/maybe';
 
 const defaultMatchPattern = {
   Nothing: () => 0
@@ -46,17 +46,13 @@ test('maybe::match - Nothing', t => {
 });
 
 test('maybe::map - Just', t => {
-  t.plan(2);
+  t.plan(1);
 
   const result = Just(1);
   t.equals(result.map(n => n + 1).match(defaultMatchPattern), 2);
-  t.equals(result.map(n => n + 1).match({
-    Nothing: () => 0,
-    Just: v => v + 1
-  }), 3);
 });
 
-test('maybe::map - Nothing', t => {
+test('maybe::map - Just', t => {
   t.plan(1);
 
   const result = Nothing;

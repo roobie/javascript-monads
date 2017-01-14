@@ -9,5 +9,5 @@ export default {
       presets: ["babel-preset-es2015-rollup"]
     })
   ],
-  dest: 'bundle.js'
+  dest: 'out/bundle.js'
 };
