@@ -59,3 +59,5 @@ object.<fnName> = function (...args) {
   return Just(result);
 };
 ```
+
+Of course, one would have to have options, e.g. if the algorithm should check for empty arrays and treat them as Nothing etc.
